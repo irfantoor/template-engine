@@ -1,7 +1,7 @@
 {
     "name": "irfantoor/template-engine",
     "description": "A simple and small template engine",
-    "keywords": ["php, template, engine, simple, small, fast, single-file"],
+    "keywords": ["php", "template", "engine", "simple", "small", "fast", "single-file"],
     "type": "library",
     "license": "MIT",
     "authors": [
