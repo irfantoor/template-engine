@@ -21,9 +21,6 @@
         }
     },
     "require-dev": {
-        "irfantoor/console": "dev-master",
-        "irfantoor/debug": "dev-master",
-        "irfantoor/command": "dev-master",
-        "irfantoor/test": "dev-master"
+        "irfantoor/test": "^0.4.3"
     }
 }
