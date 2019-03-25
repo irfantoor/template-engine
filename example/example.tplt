@@ -1,0 +1,37 @@
+<?php
+
+echo "Its direct from the php!";
+?>
+{@echo PHP_EOL . "Hello World!\n"}
+today is : {@echo date("Y-m-d")}
+
+{@$list=[
+    ['name' => 'n1'],
+    ['name' => 'n2'],
+]}
+
+{@if ($list):}
+<ul>
+{@foreach ($list as $item):}
+    <li>{$item['name']}</li>
+{@endforeach}
+</ul>
+{@else:}
+<h1>List not defined!</h1>
+{@endif}
+
+
+{@$l=[
+    'key'  => 'value',
+    'test' => 'Something',
+
+]}
+
+{# its a list processing}
+{@if ($l):}
+<ul>
+{@foreach ($l as $k=>$v):}
+    <li>{$k}: {$v}</li>
+{@endforeach}
+</ul>
+{@endif}

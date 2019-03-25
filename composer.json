@@ -1,0 +1,29 @@
+{
+    "name": "irfantoor/template-engine",
+    "description": "A simple and small template engine",
+    "keywords": ["php, template, engine, simple, small, fast, single-file"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Irfan TOOR",
+            "email": "email@irfantoor.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ],
+        "psr-4": {
+            "IrfanTOOR\\": "src"
+        }
+    },
+    "require-dev": {
+        "irfantoor/console": "dev-master",
+        "irfantoor/debug": "dev-master",
+        "irfantoor/command": "dev-master",
+        "irfantoor/test": "dev-master"
+    }
+}
