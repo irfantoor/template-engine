@@ -77,7 +77,7 @@ __format: {#...}__
 ### Tokens
 __format: {$...}__
 
-the tokens are replaced with the data provided by through the passed data array.
+the tokens are replaced with the values provided by the passed data array.
 
 ```tplt
 {$name['first']} {$name['last']}
