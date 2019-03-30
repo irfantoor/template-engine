@@ -99,6 +99,21 @@ class TemplateEngineTest extends Test
         $rendered = $te->processText($text);
 
         $this->assertEquals($expected, $rendered);
+
+        $expected = <<< END
+<html>
+<head>
+    <title>Test Page</title>
+</head>
+<body>
+
+<h1>Test Page</h1>
+Hello World from the dir ...
+</body>
+</html>
+
+END;
+        $this->assertEquals($expected, $te->processFile('home.php'));
     }
 
     function testTextDataOverride()

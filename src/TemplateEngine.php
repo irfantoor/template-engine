@@ -53,7 +53,6 @@ class TemplateEngine
         $this->data = $data;
 
         extract($data);
-
         ob_start();
         eval('?>' . $this->text);
         $text = ob_get_clean();
@@ -72,7 +71,7 @@ class TemplateEngine
 
     function processFile($file, $data = [])
     {
-        $file = $this->base_path . $file;
+        chdir($this->base_path);
         if (!is_file($file)) {
             throw new Exception("file: $file, not found", 1);
         }
