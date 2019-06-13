@@ -6,6 +6,10 @@ use Exception;
 
 class TemplateEngine
 {
+    const NAME        = "Irfan's Template Engine";
+    const DESCRIPTION = "A simple and small template engine";
+    const VERSION     = "0.1.5";
+
     protected $text;
     protected $data;
     

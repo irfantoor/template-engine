@@ -21,6 +21,6 @@
         }
     },
     "require-dev": {
-        "irfantoor/test": "^0.4.3"
+        "irfantoor/test": "^0.5.1"
     }
 }
