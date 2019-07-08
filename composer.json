@@ -11,6 +11,7 @@
         }
     ],
     "require": {
+        "php": ">= 7.3"
     },
     "autoload": {
         "classmap": [
@@ -21,6 +22,6 @@
         }
     },
     "require-dev": {
-        "irfantoor/test": "^0.5.1"
+        "irfantoor/test": "^0.6.1"
     }
 }
