@@ -8,7 +8,7 @@ class TemplateEngine
 {
     const NAME        = "Irfan's Template Engine";
     const DESCRIPTION = "A simple and small template engine";
-    const VERSION     = "0.2";
+    const VERSION     = "0.2.1";
 
     protected $text;
     protected $data;
@@ -46,7 +46,7 @@ class TemplateEngine
             '/\{\@(.*)\}/Us'  => '<' .'?php ' . "$1" . '; ?' . '>',
 
             # php tag {$...}
-            '/\{\$(.*)\}/Us' => '<' .'?php print_r($' . "$1" . '); ?' . '>',
+            '/\{\$(.*)\}/Us' => '<' .'?php print_r(htmlspecialchars($' . "$1" . ')); ?' . '>',
         ];
 
         foreach ($exp as $p => $r) {

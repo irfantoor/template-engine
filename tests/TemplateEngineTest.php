@@ -162,4 +162,18 @@ END;
         ];
         $this->assertEquals('{$text}{$data}', $te->processText($text, $data));
     }
+
+    function testHtmlSpecialChars()
+    {
+        $te = $this->getTemplateEngine();
+
+        $code = '<' . '?php ' . 'echo "its the code";';
+        $data = ['code' => $code];
+        $expected = htmlspecialchars($code);
+        $this->assertEquals($expected, $te->processText('{$code}', $data));
+        # you can avoid htmlspecial charecters
+        $this->assertEquals($code, $te->processText('{@echo $code}', $data));
+        # or directly process the result!
+        $this->assertEquals($expected, $te->processText('{@echo htmlspecialchars($code)}', $data));
+    }
 }
