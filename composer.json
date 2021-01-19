@@ -14,14 +14,11 @@
         "php": ">= 7.3"
     },
     "autoload": {
-        "classmap": [
-            "src/"
-        ],
         "psr-4": {
             "IrfanTOOR\\": "src"
         }
     },
     "require-dev": {
-        "irfantoor/test": "^0.6.1"
+        "irfantoor/test": "~0.7"
     }
 }

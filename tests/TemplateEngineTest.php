@@ -29,9 +29,6 @@ class TemplateEngineTest extends Test
         $te = $this->te;
         $version = $te::VERSION;
 
-        $c = new \IrfanTOOR\Console();
-        $c->write('(' . $version . ') ', 'dark');
-
         $this->assertString($version);
         $this->assertFalse(strpos($version, 'VERSION'));
         $this->assertEquals($te::VERSION, TemplateEngine::VERSION);

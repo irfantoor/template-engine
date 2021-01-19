@@ -69,8 +69,8 @@ echo $te->processFile("home.php", $data);
 
 __format: {#...}__
 
-```tplt
-{# its a comment}
+```php
+{# its a comment!}
 {#anything here including the external brackets are removed from the output}
 ```
 
@@ -90,29 +90,36 @@ email: {$email}
 ### Commands
 __format: {@...}__
 
-```tplt
+```php
 {@include 'header.php'}
 
 {@echo date('d-m-Y')}
 
 {@if ($list):}
+    # Note: you can use the curley brackets, so use the form foreach (...): endforeach instead
     {@foreach ($list as $k => $v):}
     data provided is : {$k} | {$v}
     {@endforeach}
 {@endif}
 
-define: {@$d=date('d-m-Y')}
-prints: {$d}
 
-{@$list = [
+
+# you can define the data in the template
+{@ $d = date('d-m-Y')}
+
+# and prints ...
+date : {$d}
+
+# Note: The statement in {@ ...} tags need not to be terminated with a semicolon ';'
+{@ $list = [
     'black',
     'white'
 ]}
 
-dump list: 
+dump list:
+# Note: The variable to dump
 {$list}
-
 ```
 
- Note: after {@ use the commands as if you were using the php code, though only constraint is that
- you can not use the loops or commands using the curly brackets.
+Note: after {@ use the commands as if you were using the php code, though only
+constraint is that you can not use the loops or commands using the curly brackets.

@@ -1,11 +1,15 @@
 <?php
-
-echo "Its direct from the php!";
+    echo "Its direct from the php!";
+    echo PHP_EOL;
 ?>
-{@echo PHP_EOL . "Hello World!\n"}
-today is : {@echo date("Y-m-d")}
 
-{@$list=[
+{@echo "Hello World!\n"}
+
+{@ $d = date("Y-m-d")}
+today is : {$d}
+{@echo today is: date("Y-m-d")}
+
+{@ $list=[
     ['name' => 'n1'],
     ['name' => 'n2'],
 ]}
@@ -20,8 +24,7 @@ today is : {@echo date("Y-m-d")}
 <h1>List not defined!</h1>
 {@endif}
 
-
-{@$l=[
+{@ $l=[
     'key'  => 'value',
     'test' => 'Something',
 
