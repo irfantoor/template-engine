@@ -34,6 +34,7 @@ class TemplateEngineTest extends Test
         $this->assertEquals($te::VERSION, TemplateEngine::VERSION);
     }
 
+    # {$...}
     function testProcessText()
     {
         $te = $this->getTemplateEngine();
@@ -49,6 +50,21 @@ class TemplateEngineTest extends Test
         $this->assertEquals("Hello World!, I'm your DJ", $rendered);
     }
 
+    # {!$...}
+    function testProcessTextDirect()
+    {
+        $te = $this->getTemplateEngine();
+
+        $html = '<span>{!$url}</span>';
+        $data = [
+            'url' => '<a href="#">test</a>',
+        ];
+
+        $rendered = $te->processText($html, $data);
+        $this->assertEquals('<span><a href="#">test</a></span>', $rendered);
+    }    
+
+    # {$...}
     function testProcessFile()
     {
         $te = $this->getTemplateEngine();
@@ -154,10 +170,8 @@ END;
         $data = [
             'text' => '{$data}',
             'data' => '{$text}',
-            'depth' => 1000,
-            'max_depth' => 1000,
         ];
-        $this->assertEquals('{$text}{$data}', $te->processText($text, $data));
+        $this->assertEquals('{$text}{$data}', $te->processText($text, $data, 1000));
     }
 
     function testHtmlSpecialChars()

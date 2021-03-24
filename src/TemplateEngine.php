@@ -3,83 +3,133 @@
 namespace IrfanTOOR;
 
 use Exception;
-
+/**
+ * Template Engine parsing a template, which might include the following tags
+ * {$tag} -- prints the value of tag in the template e.g.
+ *           <h1>{$title}</h1>
+ * {!$tag} -- prints the value of tag in the template without any speicial char
+ *            conversion e.g.
+ *           <script>{!$script}</script>
+ * {@...} -- use to execute a php commmand e.g. {@echo date('d-m-Y')}
+ *           {@foreach ($cats as $cat):}
+ *           <li>{$cat}</li>
+ *           {@endforeach}
+ * {#...} -- define a comment e.g. {# this is a comment}
+ * {@extends("main.php")} -- extends from the template main.php and replace the
+ *           tag {$section} in the main.php by the contents of current template
+ */
 class TemplateEngine
 {
     const NAME        = "Irfan's Template Engine";
     const DESCRIPTION = "A simple and small template engine";
-    const VERSION     = "0.2.2";
+    const VERSION     = "0.3";
 
-    protected $text;
-    protected $data;
-    
-    protected $base_path;
-    protected $depth;
+    /** @var string -- root dir/path of the views */
+    protected $root;
+
+    /** @var int -- max depth for the iteration */
     protected $max_depth;
 
-    function __construct($init = [])
-    {
-        $defaults = [
-            'max_depth' => 3,
-            'base_path' => '',
-        ];
+    # regex ...
+    protected static $exp = [
+        # template extends another template: e.g. {@extends("main.php")}
+        '/\{\@extends\("(.*)"\)\}/Us' => '',
 
-        foreach ($defaults as $k => $v) {
-            if (!array_key_exists($k, $init)) {
-                $init[$k] = $v;
+        # comments: e.g {# this is a comment}
+        '/\{\#(.*)\}/Us'  => '',
+
+        # any php statement: e.g
+        # {@echo date("y m d")}
+        # {@foreach ():} ... {@endforeach}
+        '/\{\@(.*)\}/Us'  => '<' .'?php ' . "$1" . '; ?' . '>',
+
+        # php tag : e.g {$title}  <h1>{$title}</h1> ...
+        '/\{\$(.*)\}/Us' => '<' .'?php print_r(htmlspecialchars($' . "$1  ?? ''" . ')); ?' . '>',
+
+        # php tag : e.g {!$url}  <div>{!$url}</div> ...
+        # no htmlspecialchars converion - use with caution.
+        '/\{\!\$(.*)\}/Us' => '<' .'?php print_r($' . "$1  ?? ''" . '); ?' . '>',
+    ];
+
+    /**
+     * TE Constructor
+     *
+     * @param array $options Init options:
+     *                            base_path: provide the base path of views
+     *                            max_depth: max depth of iteration
+     */
+    public function __construct(array $options = [])
+    {
+        $this->root      = $options['base_path'] ?? '';
+        $this->max_depth = $options['max_depth'] ?? 3;
+    }
+
+    /**
+     * processes the text
+     * The tags {$tag}, {# comment ...}, {@phpcommand}, {@extends("main.php")}
+     * are processed
+     * e.g of {@phpcommand} are: {@include "header.php"}, {@print_r($array)},
+     * {@foreach($item as $k => $v):} {$k} {@endforeach} ...
+     * {@extends("main.php")} extends from main.php and replaces {$section} in
+     * main.php with the contents of parsed result of the current template.
+     *
+     * @param string $contents Text to be parsed
+     * @param array  $data     Associative array of key=>value, to be used
+     * @return string
+     */
+    public function processText(string $contents, array $data = [], ?int $depth = null): string
+    {
+        $depth = $depth ?? $this->max_depth;
+
+        # check if the contents contains {@extends(".*")}
+        preg_match('/\{\@extends\("(.*)"\)\}/Us', $contents, $m);
+
+        foreach (self::$exp as $p => $r) {
+            $contents = preg_replace($p, $r, $contents);
+        }
+
+        $fp = function() use ($contents, $data) {
+            extract($data);
+            eval('?' . '>' . $contents);
+        };
+
+        try {
+            ob_start();
+            $fp();
+            $contents = ob_get_clean();
+
+            if ($m) {
+                $data['section'] = $contents;
+                $contents = $this->processFile($m[1], $data);
             }
+
+            $depth--;
+
+            if ($depth && preg_match('/\{[\#|\@|\$]+(.*)\}/Us', $contents)) {
+                return $this->processText($contents, $data, $depth);
+            }
+        } catch(Throwable $e) {
+            ob_clean();
+            throw $e;
         }
 
-        $this->base_path = $init['base_path'];
-        $this->max_depth = $init['max_depth'];
+        return $contents;
     }
 
-    private function _process($text, $data = [], $depth)
+    /**
+     * Processes a template file
+     *
+     * @param string $tplt Template file
+     * @param array  $data Data containing associative data for the variable
+     * @return string
+     */
+    public function processFile(string $tplt, array $data = []): string
     {
-        $this->depth = $depth;
+        chdir($this->root);
 
-        $exp = [
-            # comments {# ...}
-            '/\{\#(.*)\}/Us'  => '',
+        if (!file_exists($tplt))
+            throw new Exception("File: " . str_replace(ROOT, "", $this->root) . $tplt . ", not found");
 
-            # php statement {@ ...}        
-            '/\{\@(.*)\}/Us'  => '<' .'?php ' . "$1" . '; ?' . '>',
-
-            # php tag {$...}
-            '/\{\$(.*)\}/Us' => '<' .'?php print_r(htmlspecialchars($' . "$1" . ')); ?' . '>',
-        ];
-
-        foreach ($exp as $p => $r) {
-            $text = preg_replace($p, $r, $text);
-        }
-
-        $this->text = $text;
-        $this->data = $data;
-
-        extract($data);
-        ob_start();
-        eval('?>' . $this->text);
-        $text = ob_get_clean();
-
-        if ($this->depth && preg_match('/\{[\#|\@|\$]+(.*)\}/Us', $text)) {
-            return $this->_process($text, $this->data, $this->depth - 1);
-        }
-        
-        return $text;
-    }
-
-    function processText($text, $data = [])
-    {
-        return $this->_process($text, $data, $this->max_depth);
-    }
-
-    function processFile($file, $data = [])
-    {
-        chdir($this->base_path);
-        if (!is_file($file)) {
-            throw new Exception("file: $file, not found", 1);
-        }
-
-        return $this->processText(file_get_contents($file), $data);
+        return $this->processText(file_get_contents($tplt), $data);
     }
 }

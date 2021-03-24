@@ -6,13 +6,13 @@ A simple and small template engine.
 
 ## Installation
 
-Incstallation or inclusion in your project:
+Installation or inclusion in your project:
+
 ```sh
 $ composer require irfantoor/template-engine
 ```
 
-to test:
-in the root folder:
+To test the template engine:
 ```sh
 $ vendor/bin/test
 ```
@@ -29,7 +29,7 @@ $te = new IrfanTOOR\TemplateEngine([
 ```php
 $text = "{$greeting} {$user}!";
 $data = [
-    'tgreeting' => 'Hello',
+    'greeting' => 'Hello',
     'user' => 'World',
 ];
 
@@ -77,7 +77,7 @@ __format: {#...}__
 ### Tokens
 __format: {$...}__
 
-the tokens are replaced with the values provided by the passed data array.
+The tokens are replaced with the values provided by the passed data array.
 
 ```tplt
 {$name['first']} {$name['last']}
@@ -86,6 +86,11 @@ the tokens are replaced with the values provided by the passed data array.
 tel: {$tel}
 email: {$email}
 ```
+
+__format: {!$...}__
+The tokens are replaced with tags are replaced with value, without doing any html
+special character conversion. It helps in including the html tags etc. which are
+displayed as html and not as content.
 
 ### Commands
 __format: {@...}__
@@ -117,7 +122,7 @@ date : {$d}
 ]}
 
 dump list:
-# Note: The variable to dump
+# Note: The variable to dump, might as well be an object, array, bool int or a string
 {$list}
 ```
 
