@@ -187,4 +187,17 @@ END;
         # or directly process the result!
         $this->assertEquals($expected, $te->processText('{@echo htmlspecialchars($code)}', $data));
     }
+
+    function testContentsTag()
+    {
+        $te = $this->getTemplateEngine();
+
+        $text = '<tag>{$contents}</tag>';
+        $data['contents'] = '[CONTENTS]';
+        $this->assertEquals('<tag>[CONTENTS]</tag>', $te->processText($text, $data));
+
+        $text = '<tag>{$data}</tag>';
+        $data['data'] = '[DATA]';
+        $this->assertEquals('<tag>[DATA]</tag>', $te->processText($text, $data));
+    }
 }

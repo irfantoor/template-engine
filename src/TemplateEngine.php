@@ -89,14 +89,16 @@ class TemplateEngine
             $contents = preg_replace($p, $r, $contents);
         }
 
-        $fp = function() use ($contents, $data) {
+        # process in a contained manner
+        $fp = (function($contents, $data) {
+            $__CONTENTS = $contents;
             extract($data);
-            eval('?' . '>' . $contents);
-        };
+            eval('?' . '>' . $__CONTENTS);
+        })->bindTo(null);
 
         try {
             ob_start();
-            $fp();
+            $fp($contents, $data);
             $contents = ob_get_clean();
 
             if ($m) {
