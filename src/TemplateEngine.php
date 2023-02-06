@@ -44,11 +44,11 @@ class TemplateEngine
         '/\{\@(.*)\}/Us'  => '<' .'?php ' . "$1" . '; ?' . '>',
 
         # php tag : e.g {$title}  <h1>{$title}</h1> ...
-        '/\{\$(.*)\}/Us' => '<' .'?php print_r(htmlspecialchars($' . "$1  ?? ''" . ')); ?' . '>',
+        '/\{\$(.*)\}/Us' => '<' .'?php print_r($' . "$1  ?? ''" . '); ?' . '>',
 
         # php tag : e.g {!$url}  <div>{!$url}</div> ...
-        # no htmlspecialchars converion - use with caution.
-        '/\{\!\$(.*)\}/Us' => '<' .'?php print_r($' . "$1  ?? ''" . '); ?' . '>',
+        # htmlspecialchars converion - for insecure data
+        '/\{\!\$(.*)\}/Us' => '<' .'?php print_r(htmlspecialchars($' . "$1  ?? ''" . ')); ?' . '>',
     ];
 
     /**

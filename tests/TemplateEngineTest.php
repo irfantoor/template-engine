@@ -61,8 +61,8 @@ class TemplateEngineTest extends Test
         ];
 
         $rendered = $te->processText($html, $data);
-        $this->assertEquals('<span><a href="#">test</a></span>', $rendered);
-    }    
+        $this->assertEquals('<span>'.htmlspecialchars('<a href="#">test</a>') . '</span>', $rendered);
+    }
 
     # {$...}
     function testProcessFile()
@@ -101,7 +101,7 @@ class TemplateEngineTest extends Test
 
         foreach ($tests as $k => $v) {
             $this->assertEquals($k, $te->processText($v, $data));
-        }        
+        }
     }
 
     # {@foreach ($name as )}
@@ -181,7 +181,7 @@ END;
         $code = '<' . '?php ' . 'echo "its the code";';
         $data = ['code' => $code];
         $expected = htmlspecialchars($code);
-        $this->assertEquals($expected, $te->processText('{$code}', $data));
+        $this->assertEquals($expected, $te->processText('{!$code}', $data));
         # you can avoid htmlspecial charecters
         $this->assertEquals($code, $te->processText('{@echo $code}', $data));
         # or directly process the result!
