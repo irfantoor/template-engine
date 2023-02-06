@@ -7,9 +7,10 @@ use Exception;
  * Template Engine parsing a template, which might include the following tags
  * {$tag} -- prints the value of tag in the template e.g.
  *           <h1>{$title}</h1>
- * {!$tag} -- prints the value of tag in the template without any speicial char
- *            conversion e.g.
- *           <script>{!$script}</script>
+ *           <script>{$script}</script>
+ * {!$tag} -- prints the value of tag in the template with speicial char
+ *            conversion, specially for printing query or posted data e.g.
+ *            <pre>{!$_GET['q']}</pre>
  * {@...} -- use to execute a php commmand e.g. {@echo date('d-m-Y')}
  *           {@foreach ($cats as $cat):}
  *           <li>{$cat}</li>
